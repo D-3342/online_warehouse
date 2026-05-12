@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<section class="container section">
+    <h1 class="page-title">{{ product.name }}</h1>
+
+    <div class="detail-layout">
+        <div>
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="detail-image">
+            {% endif %}
+        </div>
+
+        <div class="detail-info">
+            <p><strong>Категория:</strong> {{ product.category.name }}</p>
+            <p><strong>Бренд:</strong> {{ product.brand|default:"—" }}</p>
+            <p><strong>Цена:</strong> {{ product.price }} ₽</p>
+            <p><strong>Количество:</strong> {{ product.quantity }}</p>
+            <p><strong>Срок годности:</strong> {{ product.expiration_date }}</p>
+            <p><strong>Описание:</strong> {{ product.description }}</p>
+
+            <a href="{% url 'product_list' %}" class="btn btn--primary">Назад к списку</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
