@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import ImageField
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -15,6 +17,7 @@ class Product(models.Model):
     quantity = models.IntegerField()
     description = models.CharField(max_length=300)
     expiration_date = models.DateField()
+    image = ImageField(upload_to="products", blank=True)
 
     def __str__(self):
         return self.name

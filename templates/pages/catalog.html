@@ -1,10 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!-- pages/products/catalog.html -->
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}Каталог товаров{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">Каталог товаров</h1>
+
+    <!-- Форма поиска и фильтров -->
+    <form method="get" class="filters-form">
+        <div class="search-bar">
+            <input type="text" name="search" placeholder="Поиск товаров..." value="{{ search_query }}">
+            <button type="submit" class="btn btn--primary">🔍 Найти</button>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>Категории:</label>
+                <div class="category-filters">
+                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}{% endif %}"
+                       class="filter-chip {% if not selected_category %}active{% endif %}">
+                        Все
+                    </a>
+                    {% for category in categories %}
+                        <a href="?{% if search_query %}search={{ search_query }}&{% endif %}category={{ category.id }}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}"
+                           class="filter-chip {% if selected_category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}">
+                            {{ category.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Сортировка:</label>
+                <select name="sort" class="sort-select" onchange="this.form.submit()">
+                    <option value="name" {% if selected_sort == 'name' %}selected{% endif %}>По названию (А-Я)</option>
+                    <option value="-name" {% if selected_sort == '-name' %}selected{% endif %}>По названию (Я-А)</option>
+                    <option value="price" {% if selected_sort == 'price' %}selected{% endif %}>По цене (возрастание)</option>
+                    <option value="-price" {% if selected_sort == '-price' %}selected{% endif %}>По цене (убывание)</option>
+                </select>
+            </div>
+
+            {% if search_query or selected_category %}
+                <a href="{% url 'catalog:product_list' %}" class="reset-link">Сбросить фильтры</a>
+            {% endif %}
+        </div>
+    </form>
+
+    <!-- Список товаров -->
+    {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+                {% include 'components/product-card.html' with product=product %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>😕 Товары не найдены</p>
+            <p>Попробуйте изменить параметры поиска</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

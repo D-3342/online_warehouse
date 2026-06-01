@@ -1,10 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<!-- templates/users/profile.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="container">
+        <div class="auth-layout">
+            <div class="auth-card" style="max-width: 580px; margin: 0 auto;">
+                <div class="auth-card__header">
+                    <h2>Личный кабинет</h2>
+                    <p style="margin: 8px 0 0; color: #6b7280;">Добро пожаловать, {{ user.username }}!</p>
+                </div>
+
+                <div class="auth-card__body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert" style="padding: 12px; border-radius: 12px; margin-bottom: 20px; background: #dbeafe; color: #1e40af;">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            {{ form.username.label_tag }}
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="errorlist">{{ form.username.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.full_name.label_tag }}
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}
+                                <div class="errorlist">{{ form.full_name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.phone.label_tag }}
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="errorlist">{{ form.phone.errors }}</div>
+                            {% endif %}
+                            <small style="color: #6b7280; font-size: 12px;">Формат: 8(XXX)XXX-XX-XX</small>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="errorlist">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div style="display: flex; gap: 12px; margin-top: 20px;">
+                            <button type="submit" class="btn btn--primary" style="flex: 1;">Сохранить изменения</button>
+                            <a href="{% url 'users:logout' %}" class="btn btn--outline" style="flex: 1; text-align: center;">Выйти</a>
+                        </div>
+                    </form>
+
+                    <div class="auth-card__links" style="margin-top: 20px; justify-content: center;">
+                        <a href="/">← На главную</a>
+                        {% if user.is_authenticated %}
+                            <a href="#">Мои заказы →</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="auth-card__footer">
+                    <span>PROFILE</span>
+                    <span>•</span>
+                    <span>SECURE</span>
+                </div>
+            </div>
+
+            <div class="auth-side">
+                <div class="auth-side__icon">
+                    👤
+                </div>
+                <h3 style="margin: 16px 0 8px;">{{ user.full_name|default:user.username }}</h3>
+                <p style="color: #6b7280;">ID: {{ user.id }}</p>
+                <p style="font-size: 14px; color: #6b7280;">Дата регистрации: {{ user.date_joined|date:"d.m.Y" }}</p>
+                {% if user.last_login %}
+                    <p style="font-size: 12px; color: #9ca3af; margin-top: 8px;">Последний вход: {{ user.last_login|date:"d.m.Y H:i" }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

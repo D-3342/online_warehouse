@@ -1,57 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
 {% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Главная{% endblock %}
 
 {% block content %}
-<section class="hero container">
-    <div class="hero__content">
-        <h1>Свежие продукты с доставкой на дом!</h1>
-        <p>Оформи заказ прямо сейчас и получи скидку 10% на первую покупку!</p>
-        <a href="#" class="btn btn--primary">Перейти в каталог</a>
-    </div>
-
-    <div class="hero__image">
-        <div class="hero__basket">🛒</div>
-    </div>
-</section>
-
-<section class="container section">
-    <div class="section__header">
-        <h2>ПОПУЛЯРНЫЕ ТОВАРЫ</h2>
-
-        <div class="tabs">
-            <button class="tab tab--active">Фрукты</button>
-            <button class="tab">Овощи</button>
-            <button class="tab">Молочные продукты</button>
-            <button class="tab">Напитки</button>
+    <section class="hero container">
+        <div class="hero__content">
+            <h1>Свежие продукты с доставкой на дом!</h1>
+            <p>Оформи заказ прямо сейчас и получи скидку 10% на первую покупку!</p>
+            <a href="#" class="btn btn--primary">Перейти в каталог</a>
         </div>
-    </div>
 
-    <div class="products-grid">
-        {% for product in products %}
-            {% include 'components/product-card.html' %}
-        {% endfor %}
-    </div>
-</section>
+        <div class="hero__image">
+            <div class="hero__basket">🛒</div>
+        </div>
+    </section>
 
-<section class="promo container">
-    <div class="promo__content">
-        <h3>Не откладывай на завтра</h3>
-        <p>Покупай свежие продукты с доставкой на дом уже сегодня.</p>
-    </div>
-</section>
     <section class="container section">
-    <div class="section__header">
-        <h2>ПОПУЛЯРНЫЕ ТОВАРЫ</h2>
-    </div>
+        <div class="section__header">
+            <h2>ТОВАРЫ ПО КАТЕГОРИЯМ</h2>
 
-    <div class="products-grid">
-        {% for product in products %}
-            {% include 'components/product-card.html' %}
-        {% endfor %}
-    </div>
-</section>
+            <div class="tabs">
+            <a href="{% url 'home' %}"
+               class="tab {% if not selected_category %}tab--active{% endif %}">
+                Все
+            </a>
+
+            {% for category in categories %}
+                <a href="{% url 'home' %}?category={{ category.id }}"
+                   class="tab {% if selected_category|stringformat:'s' == category.id|stringformat:'s' %}tab--active{% endif %}">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+            </div>
+        </div>
+        <div class="products-grid">
+    {% for product in products %}
+        <div class="product-card">
+            {% if product.image %}
+                <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
+            {% endif %}
+            <h3 class="product-card__title">{{ product.name }}</h3>
+            <p class="product-card__price">{{ product.price }} ₽</p>
+            <p class="product-card__desc">{{ product.description }}</p>
+
+            <div class="qty">
+                <button type="button">−</button>
+                <input type="text" value="1" readonly>
+                <button type="button">+</button>
+            </div>
+
+            <button class="btn btn--cart">В корзину</button>
+        </div>
+    {% endfor %}
+</div>
+    </section>
+
+    <section class="promo container">
+        <div class="promo__content">
+            <h3>Не откладывай на завтра</h3>
+            <p>Покупай свежие продукты с доставкой на дом уже сегодня.</p>
+        </div>
+    </section>
+    <section class="container section">
+        <div class="section__header">
+            <h2>ПОПУЛЯРНЫЕ ТОВАРЫ</h2>
+        </div>
+
+        <div class="products-grid">
+            {% for product in products %}
+        <div class="product-card">
+            {% if product.image %}
+                <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
+            {% endif %}
+            <h3 class="product-card__title">{{ product.name }}</h3>
+            <p class="product-card__price">{{ product.price }} ₽</p>
+            <p class="product-card__desc">{{ product.description }}</p>
+
+            <div class="qty">
+                <button type="button">−</button>
+                <input type="text" value="1" readonly>
+                <button type="button">+</button>
+            </div>
+
+            <button class="btn btn--cart">В корзину</button>
+        </div>
+    {% endfor %}
+        </div>
+    </section>
 {% endblock %}

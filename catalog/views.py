@@ -1,40 +1,52 @@
-from django.shortcuts import render
+# catalog/views.py
 from django.shortcuts import render, get_object_or_404
-from .models import Product
+from django.db.models import Q
+from .models import Product, Category
+
 
 def index(request):
-    products = [
-        {
-            "name": "Молоко 2.5%",
-            "price": 79.50,
-            "description": "Пастеризованное молоко свежего вкуса.",
-        },
-        {
-            "name": "Сыр Гауда",
-            "price": 650.00,
-            "description": "Полутвердый сыр для бутербродов и закусок.",
-        },
-    ]
-    return render(request, "pages/index.html", {"products": products})
+    categories = Category.objects.all()
+    products = Product.objects.all()[:8]
+    return render(request, "pages/index.html", {
+        "products": products,
+        "categories": categories
+    })
 
-def product_list(request):
-    search_query = request.GET.get('search', '').strip()
+
+def dish_list(request):
     products = Product.objects.select_related('category').all()
+    categories = Category.objects.all()
+
+    search_query = request.GET.get('search', '').strip()
+    category_id = request.GET.get('category', '')
+    sort = request.GET.get('sort', 'name')
 
     if search_query:
         products = products.filter(
-            name__icontains=search_query
-        ) | products.filter(
-            description__icontains=search_query
-        ) | products.filter(
-            category__name__icontains=search_query
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(category__name__icontains=search_query)
         )
 
+    if category_id and category_id.isdigit():
+        products = products.filter(category_id=int(category_id))
+
+    allowed_sort_fields = {'name', '-name', 'price', '-price'}
+    if sort in allowed_sort_fields:
+        products = products.order_by(sort)
+    else:
+        sort = 'name'
+        products = products.order_by(sort)
+
     context = {
-        'products': products.distinct(),
+        'products': products,
+        'categories': categories,
         'search_query': search_query,
+        'selected_category': category_id,
+        'selected_sort': sort,
     }
-    return render(request, 'pages/products/list.html', context)
+    return render(request, 'pages/products/catalog.html', context)
+
 
 def product_detail(request, pk):
     product = get_object_or_404(Product.objects.select_related('category'), pk=pk)

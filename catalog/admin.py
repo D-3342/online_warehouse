@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Category, Product, Promotion
 
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'products_count']
@@ -10,6 +11,7 @@ class CategoryAdmin(admin.ModelAdmin):
     def products_count(self, obj):
         return obj.products.count()
 
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'brand', 'category', 'price', 'quantity', 'expiration_date']
@@ -17,6 +19,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ['name', 'brand', 'description']
     ordering = ['name']
     list_editable = ['price', 'quantity']
+
 
 @admin.register(Promotion)
 class PromotionAdmin(admin.ModelAdmin):

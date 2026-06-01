@@ -1,27 +1,27 @@
+<!-- components/product-card.html -->
+{% load static %}
 <div class="product-card">
-    <div class="product-card__img"></div>
+    <div class="product-card__img">
+        {% if product.image %}
+            <img src="{{ product.image.url }}">
+        {% else %}
+            <div class="product-card__img--empty">🛒</div>
+        {% endif %}
+    </div>
     <h3 class="product-card__title">{{ product.name }}</h3>
+    <p class="product-card__category">{{ product.category.name }}</p>
     <p class="product-card__price">{{ product.price }} ₽</p>
 
-    <div class="qty">
-        <button type="button">−</button>
-        <input type="text" value="1" readonly>
-        <button type="button">+</button>
-    </div>
-
-    <button class="btn btn--cart">В корзину</button>
-</div>
-<div class="product-card">
-    <div class="product-card__img"></div>
-    <h3 class="product-card__title">{{ product.name }}</h3>
-    <p class="product-card__price">{{ product.price }} ₽</p>
-    <p class="product-card__desc">{{ product.description }}</p>
-
-    <div class="qty">
-        <button type="button">−</button>
-        <input type="text" value="1" readonly>
-        <button type="button">+</button>
-    </div>
-
-    <button class="btn btn--cart">В корзину</button>
+    {% if product.quantity > 0 %}
+        <div class="qty">
+            <button type="button" class="qty-minus">−</button>
+            <input type="text" value="1" readonly class="qty-input">
+            <button type="button" class="qty-plus">+</button>
+        </div>
+        <button class="btn btn--cart add-to-cart" data-product-id="{{ product.id }}">
+            🛒 В корзину
+        </button>
+    {% else %}
+        <button class="btn btn--outline" disabled>Нет в наличии</button>
+    {% endif %}
 </div>
