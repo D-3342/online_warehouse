@@ -5,8 +5,8 @@
             <span class="logo__text">ОНЛАЙН-МАГАЗИН ПРОДУКТОВ</span>
         </a>
 
-        <form class="search" action="/products/" method="get">
-            <input type="text" name="search" placeholder="Искать товары">
+        <form class="search" action="{% url 'home' %}" method="get">
+            <input type="text" name="search" placeholder="Искать товары" value="{{ search_query }}">
             <button type="submit">🔍</button>
         </form>
 

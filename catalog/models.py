@@ -29,3 +29,5 @@ class Promotion(models.Model):
     is_percent = models.BooleanField(default=True)
     discount = models.CharField(max_length=10)
     products = models.ManyToManyField(Product, related_name="promotions", blank=True)
+
+

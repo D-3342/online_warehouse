@@ -3,7 +3,8 @@ from .models import Order, OrderItem
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
-    extra = 0
+    extra = 1
+    fields = ['product', 'quantity', 'price']
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

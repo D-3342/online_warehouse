@@ -21,41 +21,42 @@
             <h2>ТОВАРЫ ПО КАТЕГОРИЯМ</h2>
 
             <div class="tabs">
-            <a href="{% url 'home' %}"
-               class="tab {% if not selected_category %}tab--active{% endif %}">
-                Все
-            </a>
-
-            {% for category in categories %}
-                <a href="{% url 'home' %}?category={{ category.id }}"
-                   class="tab {% if selected_category|stringformat:'s' == category.id|stringformat:'s' %}tab--active{% endif %}">
-                    {{ category.name }}
+                <a href="{% url 'home' %}{% if search_query %}?search={{ search_query }}{% endif %}"
+                   class="tab {% if not selected_category %}tab--active{% endif %}">
+                    Все
                 </a>
-            {% endfor %}
+
+                {% for category in categories %}
+                    <a href="{% url 'home' %}?category={{ category.id }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                       class="tab {% if selected_category|stringformat:'s' == category.id|stringformat:'s' %}tab--active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
             </div>
         </div>
+
         <div class="products-grid">
-    {% for product in products %}
-        <div class="product-card">
-            {% if product.image %}
-                <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% else %}
-                <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
-            {% endif %}
-            <h3 class="product-card__title">{{ product.name }}</h3>
-            <p class="product-card__price">{{ product.price }} ₽</p>
-            <p class="product-card__desc">{{ product.description }}</p>
+            {% for product in products %}
+                <div class="product-card">
+                    {% if product.image %}
+                        <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
+                    {% endif %}
+                    <h3 class="product-card__title">{{ product.name }}</h3>
+                    <p class="product-card__price">{{ product.price }} ₽</p>
+                    <p class="product-card__desc">{{ product.description }}</p>
 
-            <div class="qty">
-                <button type="button">−</button>
-                <input type="text" value="1" readonly>
-                <button type="button">+</button>
-            </div>
+                    <div class="qty">
+                        <button type="button">−</button>
+                        <input type="text" value="1" readonly>
+                        <button type="button">+</button>
+                    </div>
 
-            <button class="btn btn--cart">В корзину</button>
+                    <button class="btn btn--cart">В корзину</button>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
     </section>
 
     <section class="promo container">
@@ -64,6 +65,7 @@
             <p>Покупай свежие продукты с доставкой на дом уже сегодня.</p>
         </div>
     </section>
+
     <section class="container section">
         <div class="section__header">
             <h2>ПОПУЛЯРНЫЕ ТОВАРЫ</h2>
@@ -71,25 +73,25 @@
 
         <div class="products-grid">
             {% for product in products %}
-        <div class="product-card">
-            {% if product.image %}
-                <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% else %}
-                <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
-            {% endif %}
-            <h3 class="product-card__title">{{ product.name }}</h3>
-            <p class="product-card__price">{{ product.price }} ₽</p>
-            <p class="product-card__desc">{{ product.description }}</p>
+                <div class="product-card">
+                    {% if product.image %}
+                        <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
+                    {% endif %}
+                    <h3 class="product-card__title">{{ product.name }}</h3>
+                    <p class="product-card__price">{{ product.price }} ₽</p>
+                    <p class="product-card__desc">{{ product.description }}</p>
 
-            <div class="qty">
-                <button type="button">−</button>
-                <input type="text" value="1" readonly>
-                <button type="button">+</button>
-            </div>
+                    <div class="qty">
+                        <button type="button">−</button>
+                        <input type="text" value="1" readonly>
+                        <button type="button">+</button>
+                    </div>
 
-            <button class="btn btn--cart">В корзину</button>
-        </div>
-    {% endfor %}
+                    <button class="btn btn--cart">В корзину</button>
+                </div>
+            {% endfor %}
         </div>
     </section>
 {% endblock %}

@@ -68,7 +68,7 @@
                     <div class="auth-card__links" style="margin-top: 20px; justify-content: center;">
                         <a href="/">← На главную</a>
                         {% if user.is_authenticated %}
-                            <a href="#">Мои заказы →</a>
+                            <a href="{% url 'orders' %}">Мои заказы</a>
                         {% endif %}
                     </div>
                 </div>

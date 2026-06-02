@@ -1,10 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}Заказы клиентов{% endblock %}
+
+{% block content %}
+<section class="container section">
+    <div class="section__header">
+        <h2>ЗАКАЗЫ КЛИЕНТОВ</h2>
+        <p class="page-subtitle">Список всех заказов с товарами, суммой и статусом</p>
+    </div>
+
+    <div class="orders-grid">
+        {% for order in orders %}
+            <article class="order-card">
+                <div class="order-card__top">
+                    <div>
+                        <h3 class="order-card__title">Заказ №{{ order.id }}</h3>
+                        <p class="order-card__meta">
+                            Клиент: {{ order.customer_name }} • {{ order.created_at|date:"d.m.Y H:i" }}
+                        </p>
+                    </div>
+
+                    <span class="order-status order-status--{{ order.status }}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+
+                <div class="order-card__body">
+                    <div class="order-items">
+                        {% for item in order.items.all %}
+                            <div class="order-item">
+                                <div class="order-item__info">
+                                    <span class="order-item__name">{{ item.product.name }}</span>
+                                    <span class="order-item__count">{{ item.quantity }} шт.</span>
+                                </div>
+                                <div class="order-item__price">{{ item.total_price }} ₽</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="order-card__bottom">
+                        <div class="order-summary">
+                            <span>Сумма заказа</span>
+                            <strong>{{ order.total_amount }} ₽</strong>
+                        </div>
+
+                        <a href="#" class="btn btn--outline">Подробнее</a>
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <p>📦</p>
+                <p>Пока заказов нет</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

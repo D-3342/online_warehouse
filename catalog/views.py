@@ -4,15 +4,6 @@ from django.db.models import Q
 from .models import Product, Category
 
 
-def index(request):
-    categories = Category.objects.all()
-    products = Product.objects.all()[:8]
-    return render(request, "pages/index.html", {
-        "products": products,
-        "categories": categories
-    })
-
-
 def dish_list(request):
     products = Product.objects.select_related('category').all()
     categories = Category.objects.all()

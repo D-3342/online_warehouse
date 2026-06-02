@@ -5,9 +5,9 @@
             <ul class="menu">
                 <li><a href="/">Главная</a></li>
                 <li><a href="/products/catalog.html">Каталог</a></li>
-                {% if user.is_authenticated %}
-                    <li><a href="#">Мои заказы</a></li>
-                {% endif %}
+                <li>{% if user.is_authenticated %}
+                    <a href="{% url 'orders' %}">Мои заказы</a>
+                {% endif %}</li>
                 <li><a href="#">Акции</a></li>
                 <li><a href="#">Контакты</a></li>
             </ul>
