@@ -1,5 +1,5 @@
-<!-- pages/products/catalog.html -->
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Каталог товаров{% endblock %}
 
@@ -7,7 +7,6 @@
 <div class="container">
     <h1 class="page-title">Каталог товаров</h1>
 
-    <!-- Форма поиска и фильтров -->
     <form method="get" class="filters-form">
         <div class="search-bar">
             <input type="text" name="search" placeholder="Поиск товаров..." value="{{ search_query }}">
@@ -47,18 +46,34 @@
         </div>
     </form>
 
-    <!-- Список товаров -->
     {% if products %}
         <div class="products-grid">
             {% for product in products %}
-                {% include 'components/product-card.html' with product=product %}
+                <div class="product-card">
+                    {% if product.image %}
+                        <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
+                    {% endif %}
+
+                    <h3 class="product-card__title">{{ product.name }}</h3>
+                    <p class="product-card__price">{{ product.price }} ₽</p>
+                    <p class="product-card__desc">{{ product.description }}</p>
+
+                    <form method="post" action="{% url 'cart:add_to_cart' product.id %}" class="cart-form">
+                        {% csrf_token %}
+                        <div class="qty">
+                            <button type="button" class="qty-minus">−</button>
+                            <input type="number" name="qty" value="1" min="1" max="{{ product.quantity }}" class="qty-input">
+                            <button type="button" class="qty-plus">+</button>
+                        </div>
+                        <button class="btn btn--cart" type="submit">В корзину</button>
+                    </form>
+                </div>
             {% endfor %}
-        </div>
-    {% else %}
-        <div class="empty-state">
-            <p>😕 Товары не найдены</p>
-            <p>Попробуйте изменить параметры поиска</p>
         </div>
     {% endif %}
 </div>
+
+<script src="{% static 'js/product-card.js' %}"></script>
 {% endblock %}

@@ -61,14 +61,14 @@
 
                         <div style="display: flex; gap: 12px; margin-top: 20px;">
                             <button type="submit" class="btn btn--primary" style="flex: 1;">Сохранить изменения</button>
-                            <a href="{% url 'users:logout' %}" class="btn btn--outline" style="flex: 1; text-align: center;">Выйти</a>
+                            <a href="{% url 'users:logout' %}" class="btn btn--outline" style="margin-top: 9px; flex: 1; text-align: center;">Выйти</a>
                         </div>
                     </form>
 
                     <div class="auth-card__links" style="margin-top: 20px; justify-content: center;">
                         <a href="/">← На главную</a>
                         {% if user.is_authenticated %}
-                            <a href="{% url 'orders' %}">Мои заказы</a>
+                            <a href="{% url 'orders:orders_page' %}">Мои заказы</a>
                         {% endif %}
                     </div>
                 </div>

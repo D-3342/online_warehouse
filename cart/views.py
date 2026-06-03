@@ -1,31 +1,49 @@
-# cart/views.py
-from django.shortcuts import get_object_or_404, redirect, render
-from .models import Cart, CartItem
+from decimal import Decimal
+from django.shortcuts import get_object_or_404, render, redirect
 from catalog.models import Product
 
 
-def get_cart(request):
-    """Получить корзину пользователя"""
-    cart, _ = Cart.objects.get_or_create(user=request.user)
-    return cart
-
-
 def add_to_cart(request, product_id):
-    """Добавить товар в корзину"""
-    cart = get_cart(request)
-    product = get_object_or_404(Product, id=product_id)
+    if request.method != 'POST':
+        return redirect('catalog:product_list')
 
-    item, created = CartItem.objects.get_or_create(
-        cart=cart,
-        product=product
-    )
-    if not created:
-        item.quantity += 1
-        item.save()
+    product = get_object_or_404(Product, id=product_id)
+    qty = int(request.POST.get('qty', 1))
+
+    if qty < 1:
+        qty = 1
+    if qty > product.quantity:
+        qty = product.quantity
+
+    cart = request.session.get('cart', {})
+    key = str(product.id)
+    cart[key] = cart.get(key, 0) + qty
+
+    request.session['cart'] = cart
+    request.session.modified = True
 
     return redirect('cart:cart_detail')
 
 
 def cart_detail(request):
-    cart = get_cart(request)
-    return render(request, 'cart/detail.html', {'cart': cart})
+    cart = request.session.get('cart', {})
+    ids = [int(pid) for pid in cart.keys()]
+    products = Product.objects.filter(id__in=ids)
+
+    items = []
+    total = Decimal('0.00')
+
+    for product in products:
+        qty = cart.get(str(product.id), 0)
+        item_total = product.price * qty
+        total += item_total
+        items.append({
+            'product': product,
+            'qty': qty,
+            'item_total': item_total,
+        })
+
+    return render(request, 'pages/cart/cart.html', {
+        'items': items,
+        'total': total,
+    })
