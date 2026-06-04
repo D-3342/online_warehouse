@@ -8,7 +8,7 @@
         <div class="hero__content">
             <h1>Свежие продукты с доставкой на дом!</h1>
             <p>Оформи заказ прямо сейчас и получи скидку 10% на первую покупку!</p>
-            <a href="#" class="btn btn--primary">Перейти в каталог</a>
+            <a href="{% url 'catalog:product_list' %}" class="btn btn--primary">Перейти в каталог</a>
         </div>
 
         <div class="hero__image">
@@ -21,14 +21,13 @@
             <h2>ТОВАРЫ ПО КАТЕГОРИЯМ</h2>
 
             <div class="tabs">
-                <a href="{% url 'home' %}{% if search_query %}?search={{ search_query }}{% endif %}"
+                <a href="{% url 'home' %}{% if search_query %}?search={{ search_query|urlencode }}{% endif %}"
                    class="tab {% if not selected_category %}tab--active{% endif %}">
                     Все
                 </a>
 
                 {% for category in categories %}
-                    <a href="{% url 'home' %}?category=
-                            {{ category.id }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                    <a href="{% url 'home' %}?category={{ category.id }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}"
                        class="tab {% if selected_category|stringformat:'s' == category.id|stringformat:'s' %}tab--active{% endif %}">
                         {{ category.name }}
                     </a>
@@ -39,11 +38,13 @@
         <div class="products-grid">
             {% for product in products %}
                 <div class="product-card">
-                    {% if product.image %}
-                        <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
-                    {% endif %}
+                    <a href="{% url 'warehouse:product_detail' product.id %}" class="product-card__image-link">
+                        {% if product.image %}
+                            <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
+                        {% endif %}
+                    </a>
 
                     <h3 class="product-card__title">{{ product.name }}</h3>
                     <p class="product-card__price">{{ product.price }} ₽</p>
@@ -76,28 +77,21 @@
         </div>
 
         <div class="products-grid">
-            {% for product in products %}
+            {% for product in popular_products %}
                 <div class="product-card">
-                    {% if product.image %}
-                        <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
-                    {% endif %}
-
+                    <a href="{% url 'warehouse:product_detail' product.id %}" class="product-card__image-link">
+                        {% if product.image %}
+                            <img class="product-card__img" src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img class="product-card__img" src="/media/products/default.jpg" alt="{{ product.name }}">
+                        {% endif %}
+                    </a>
                     <h3 class="product-card__title">{{ product.name }}</h3>
                     <p class="product-card__price">{{ product.price }} ₽</p>
                     <p class="product-card__desc">{{ product.description }}</p>
-
-                    <form method="post" action="{% url 'cart:add_to_cart' product.id %}" class="cart-form">
-                        {% csrf_token %}
-                        <div class="qty">
-                            <button type="button" class="qty-minus">−</button>
-                            <input type="number" name="qty" value="1" min="1" max="{{ product.quantity }}" class="qty-input">
-                            <button type="button" class="qty-plus">+</button>
-                        </div>
-                        <button class="btn btn--cart" type="submit">В корзину</button>
-                    </form>
                 </div>
+            {% empty %}
+                <p>Пока нет популярных товаров</p>
             {% endfor %}
         </div>
     </section>

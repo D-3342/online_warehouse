@@ -14,6 +14,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
     path('', include(('catalog.urls', 'catalog'), namespace='catalog')),
     path('cart/', include('cart.urls')),
+    path('warehouse/', include(('warehouse.urls', 'warehouse'), namespace='warehouse')),
 ]
 
 if settings.DEBUG:

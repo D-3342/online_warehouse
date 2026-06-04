@@ -1,30 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-<section class="container section">
-    <h1 class="page-title">{{ product.name }}</h1>
+    <section class="container section">
+        <h1 class="page-title">{{ product.name }}</h1>
 
-    <div class="detail-layout">
-        <div>
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="detail-image">
-            {% endif %}
+        <div class="detail-layout product-detail">
+            <div class="product-detail__image-wrap">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="detail-image">
+                {% else %}
+                    <div class="detail-image detail-image--empty"></div>
+                {% endif %}
+            </div>
+
+            <div class="detail-info product-detail__info">
+                <p><strong>Категория:</strong> {{ product.category.name }}</p>
+                <p><strong>Бренд:</strong> {{ product.brand|default:"—" }}</p>
+
+                {% if product.offer and product.offer.is_active %}
+                    <div class="product-detail__price">
+                        <strong>Цена:</strong>
+                        <span class="old-price">{{ product.price }} ₽</span>
+                        <span class="new-price">{{ product.offer.get_discount_price|floatformat:2 }} ₽</span>
+                    </div>
+                    <p class="product-detail__badge">
+                        Скидка {{ product.offer.discount_percent }}%
+                        {% if product.offer.min_quantity > 1 %}
+                            при покупке от {{ product.offer.min_quantity }} шт.
+                        {% endif %}
+                    </p>
+                {% else %}
+                    <p class="product-detail__price">
+                        <strong>Цена:</strong> {{ product.price }} ₽
+                    </p>
+                {% endif %}
+
+                <p><strong>Количество:</strong> {{ product.quantity }}</p>
+                <p><strong>Срок годности:</strong> {{ product.expiration_date }}</p>
+                <p><strong>Описание:</strong> {{ product.description }}</p>
+
+                <div class="product-detail__buy-row">
+                    <form method="post" action="{% url 'cart:add_to_cart' product.id %}" class="cart-form cart-form--detail">
+                        {% csrf_token %}
+                        <div class="qty">
+                            <button type="button" class="qty-minus">−</button>
+                            <input type="number" name="qty" value="1" min="1" max="{{ product.quantity }}" class="qty-input">
+                            <button type="button" class="qty-plus">+</button>
+                        </div>
+                        <button type="submit" class="btn btn--cart">В корзину</button>
+                    </form>
+                </div>
+
+                <a href="{% url 'home' %}" class="btn btn--primary product-detail__back">Назад к списку</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="container section">
+        <div class="section__header">
+            <h2>Популярные товары</h2>
         </div>
 
-        <div class="detail-info">
-            <p><strong>Категория:</strong> {{ product.category.name }}</p>
-            <p><strong>Бренд:</strong> {{ product.brand|default:"—" }}</p>
-            <p><strong>Цена:</strong> {{ product.price }} ₽</p>
-            <p><strong>Количество:</strong> {{ product.quantity }}</p>
-            <p><strong>Срок годности:</strong> {{ product.expiration_date }}</p>
-            <p><strong>Описание:</strong> {{ product.description }}</p>
+        <div class="cards-grid">
+            {% for item in popular_products %}
+                <div class="product-card">
+                    <a href="{% url 'warehouse:product_detail' item.pk %}" class="product-card__img-link">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="product-card__img">
+                        {% else %}
+                            <div class="product-card__img product-card__img--empty"></div>
+                        {% endif %}
+                    </a>
 
-            <a href="{% url 'product_list' %}" class="btn btn--primary">Назад к списку</a>
+                    <h3 class="product-card__title">{{ item.name }}</h3>
+                    <p class="product-card__meta"><strong>Бренд:</strong> {{ item.brand|default:"—" }}</p>
+                    <p class="product-card__meta"><strong>Категория:</strong> {{ item.category.name }}</p>
+                    <p class="product-card__desc">{{ item.description|truncatechars:100 }}</p>
+
+                    {% if item.offer and item.offer.is_active %}
+                        <p class="product-card__price">
+                            <span class="old-price">{{ item.price }} ₽</span>
+                            <span class="new-price">{{ item.offer.get_discount_price|floatformat:2 }} ₽</span>
+                        </p>
+                    {% else %}
+                        <p class="product-card__price">{{ item.price }} ₽</p>
+                    {% endif %}
+
+                    <a href="{% url 'warehouse:product_detail' item.pk %}" class="btn btn--outline">Подробнее</a>
+                </div>
+            {% empty %}
+                <p>Пока нет популярных товаров</p>
+            {% endfor %}
         </div>
-    </div>
-</section>
+    </section>
+
+    <script src="{% static 'js/product-card.js' %}"></script>
 {% endblock %}

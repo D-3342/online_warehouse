@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Контакты{% endblock %}
+
+{% block content %}
+    <section class="container section contacts-page">
+        <div class="section__header">
+            <h2>КОНТАКТЫ</h2>
+            <p class="page-subtitle">Свяжитесь с владельцами сайта любым удобным способом</p>
+        </div>
+
+        <div class="contacts-grid">
+            <article class="contact-card contact-card--main">
+                <div class="contact-card__icon">👥</div>
+                <h3>О владельцах сайта</h3>
+                <p>
+                    Мы — команда, которая занимается разработкой, наполнением и поддержкой сайта.
+                    Следим за актуальностью товаров, акций и удобством использования сервиса.
+                </p>
+                <p>
+                    Если у вас есть предложения, замечания или вопросы по работе сайта,
+                    пишите напрямую — мы отвечаем максимально быстро.
+                </p>
+            </article>
+
+            <article class="contact-card">
+                <div class="contact-card__icon">📞</div>
+                <h3>Телефон</h3>
+                <p><a href="tel:+79990000000">+7 (999) 000-00-00</a></p>
+                <span class="contact-card__meta">Пн–Пт с 09:00 до 18:00</span>
+            </article>
+
+            <article class="contact-card">
+                <div class="contact-card__icon">✉️</div>
+                <h3>Почта</h3>
+                <p><a href="mailto:info@example.com">info@example.com</a></p>
+                <span class="contact-card__meta">Для заказов, сотрудничества и вопросов</span>
+            </article>
+
+            <article class="contact-card">
+                <div class="contact-card__icon">💬</div>
+                <h3>Telegram</h3>
+                <p><a href="https://t.me/your_username" target="_blank" rel="noopener noreferrer">@your_username</a></p>
+                <span class="contact-card__meta">Быстрая связь в мессенджере</span>
+            </article>
+
+            <article class="contact-card">
+                <div class="contact-card__icon">💠</div>
+                <h3>MAX</h3>
+                <p><a href="https://max.ru/support@max.ru" target="_blank" rel="noopener noreferrer">support@max.ru</a></p>
+                <span class="contact-card__meta">Официальная поддержка в мессенджере MAX</span>
+            </article>
+
+            <article class="contact-card">
+                <div class="contact-card__icon">📍</div>
+                <h3>Адрес</h3>
+                <p>г. Москва, ул. Примерная, д. 10</p>
+                <span class="contact-card__meta">Офис открыт по предварительной договорённости</span>
+            </article>
+
+            <article class="contact-card">
+                <div class="contact-card__icon">🕒</div>
+                <h3>Режим работы</h3>
+                <p>Ежедневно с 09:00 до 21:00</p>
+                <span class="contact-card__meta">Обработка онлайн-заказов — круглосуточно</span>
+            </article>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Спецпредложения{% endblock %}
+
+{% block content %}
+    <section class="container section offers-page">
+        <div class="section__header">
+            <h2>СПЕЦПРЕДЛОЖЕНИЯ</h2>
+            <p class="page-subtitle">Акции и скидки на товары</p>
+        </div>
+
+        <div class="offers-grid">
+            {% for offer in offers %}
+                <article class="offer-card">
+                    <div class="offer-card__badge">-{{ offer.discount_percent }}%</div>
+
+                    <div class="offer-card__img">
+                        {% if offer.product.image %}
+                            <img src="{{ offer.product.image.url }}" alt="{{ offer.product.name }}">
+                        {% else %}
+                            <img src="/media/products/default.jpg" alt="{{ offer.product.name }}">
+                        {% endif %}
+                    </div>
+
+                    <div class="offer-card__content">
+                        <h3>{{ offer.product.name }}</h3>
+                        <p>{{ offer.title }}</p>
+
+                        <div class="offer-card__price">
+                            <span class="old-price">{{ offer.product.price|floatformat:2 }} ₽</span>
+                            <span class="new-price">{{ offer.discounted_price|floatformat:2 }} ₽</span>
+                        </div>
+
+                        {% if offer.min_quantity > 1 %}
+                            <p class="offer-card__meta">При покупке от {{ offer.min_quantity }} шт.</p>
+                        {% endif %}
+
+                        <form method="post" action="{% url 'cart:add_to_cart' offer.product.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="qty" value="{% if offer.min_quantity > 1 %}{{ offer.min_quantity }}{% else %}1{% endif %}">
+                            <button type="submit" class="btn btn--primary">В корзину</button>
+                        </form>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-state">
+                    <p>🎁</p>
+                    <p>Пока нет специальных предложений</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

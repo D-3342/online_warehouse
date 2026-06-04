@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Promotion
+from .models import Category, Product, Offer
 
 
 @admin.register(Category)
@@ -21,8 +21,8 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ['price', 'quantity']
 
 
-@admin.register(Promotion)
-class PromotionAdmin(admin.ModelAdmin):
-    list_display = ['start_date', 'end_date', 'conditions', 'is_percent', 'discount']
-    list_filter = ['is_percent', 'start_date', 'end_date']
-    filter_horizontal = ['products']
+@admin.register(Offer)
+class OfferAdmin(admin.ModelAdmin):
+    list_display = ['title', 'product', 'discount_percent', 'min_quantity', 'is_active']
+    list_filter = ['is_active', 'discount_percent']
+    search_fields = ['title', 'product__name']

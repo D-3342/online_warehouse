@@ -17,57 +17,84 @@
     </div>
 
     {% if items %}
-    <div class="cart-layout">
-        <div class="cart-items">
-            {% for item in items %}
-                <article class="cart-item" data-product-id="{{ item.product.id }}" data-price="{{ item.product.price }}">
-                    <div class="cart-item__img">
-                        {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-                        {% else %}
-                            <img src="/media/products/default.jpg" alt="{{ item.product.name }}">
-                        {% endif %}
-                    </div>
+        <div class="cart-layout">
+            <div class="cart-items">
+                {% for item in items %}
+                    <article
+                        class="cart-item"
+                        data-product-id="{{ item.product.id }}"
+                        data-old-price="{{ item.old_price }}"
+                        data-discounted-price="{{ item.discounted_price }}"
+                        data-discount-percent="{{ item.discount_percent|default:0 }}"
+                        data-min-qty="{{ item.min_quantity|default:1 }}"
+                        data-has-discount="{% if item.show_discount %}1{% else %}0{% endif %}"
+                        data-price="{% if item.show_discount %}{{ item.discounted_price }}{% else %}{{ item.old_price }}{% endif %}"
+                    >
+                        <a href="{% url 'warehouse:product_detail' item.product.id %}" class="cart-item__img">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <img src="/media/products/default.jpg" alt="{{ item.product.name }}">
+                            {% endif %}
+                        </a>
 
-                    <div class="cart-item__info">
-                        <h3>{{ item.product.name }}</h3>
-                        <p>{{ item.product.description }}</p>
+                        <div class="cart-item__info">
+                            <h3>{{ item.product.name }}</h3>
+                            <p>{{ item.product.description }}</p>
 
-                        <div class="cart-item__bottom">
-                            <div class="qty">
-                                <button type="button" class="cart-qty-minus">−</button>
-                                <input type="number" class="cart-qty-input" value="{{ item.qty }}" min="1">
-                                <button type="button" class="cart-qty-plus">+</button>
+                            <div class="cart-item__bottom">
+                                <div class="qty">
+                                    <form method="post" action="{% url 'cart:edit_cart' item.product.id %}" class="cart-qty-form">
+                                        {% csrf_token %}
+                                        <button type="button" class="cart-qty-minus">−</button>
+                                        <input type="number" name="qty" class="cart-qty-input" value="{{ item.qty }}" min="1" max="{{ item.product.quantity }}">
+                                        <button type="button" class="cart-qty-plus">+</button>
+                                    </form>
+                                </div>
+
+                                <div class="price cart-item-total">
+                                    {% if item.show_discount %}
+                                        <span class="old-price">{{ item.old_total|floatformat:2 }} ₽</span>
+                                        <span class="new-price">{{ item.item_total|floatformat:2 }} ₽</span>
+                                    {% else %}
+                                        <span>{{ item.item_total|floatformat:2 }} ₽</span>
+                                    {% endif %}
+                                </div>
+
+                                <form method="post" action="{% url 'cart:remove_from_cart' item.product.id %}" class="cart-remove-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="cart-remove-btn">Удалить</button>
+                                </form>
                             </div>
-
-                            <div class="price cart-item-total">{{ item.item_total }} ₽</div>
                         </div>
-                    </div>
-                </article>
-            {% endfor %}
+                    </article>
+                {% endfor %}
+            </div>
+
+            <aside class="cart-summary">
+                <h2>Итого</h2>
+
+                <div class="summary-row">
+                    <span>Товары</span>
+                    <strong>{{ total|floatformat:2 }} ₽</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Доставка</span>
+                    <strong>0 ₽</strong>
+                </div>
+
+                <div class="summary-total">
+                    <span>К оплате</span>
+                    <strong>{{ total|floatformat:2 }} ₽</strong>
+                </div>
+
+                <form method="post" action="{% url 'orders:checkout' %}">
+                    {% csrf_token %}
+                    <button class="checkout-btn" type="submit">Оформить заказ</button>
+                </form>
+            </aside>
         </div>
-
-        <aside class="cart-summary">
-            <h2>Итого</h2>
-
-            <div class="summary-row">
-                <span>Товары</span>
-                <strong>{{ total }} ₽</strong>
-            </div>
-
-            <div class="summary-row">
-                <span>Доставка</span>
-                <strong>0 ₽</strong>
-            </div>
-
-            <div class="summary-total">
-                <span>К оплате</span>
-                <strong>{{ total }} ₽</strong>
-            </div>
-
-            <button class="checkout-btn" type="button">Оформить заказ</button>
-        </aside>
-    </div>
     {% else %}
         <div class="empty-state">
             <p>🛒</p>
@@ -75,5 +102,6 @@
         </div>
     {% endif %}
 </section>
-    <script src="{% static 'js/cart.js' %}"></script>
+
+<script src="{% static 'js/cart.js' %}"></script>
 {% endblock %}

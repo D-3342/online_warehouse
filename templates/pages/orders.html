@@ -17,7 +17,7 @@
                     <div>
                         <h3 class="order-card__title">Заказ №{{ order.id }}</h3>
                         <p class="order-card__meta">
-                            Клиент: {{ order.customer_name }} • {{ order.created_at|date:"d.m.Y H:i" }}
+                            Клиент: {{ order.client }} • {{ order.data_created|date:"d.m.Y" }}
                         </p>
                     </div>
 
@@ -34,7 +34,7 @@
                                     <span class="order-item__name">{{ item.product.name }}</span>
                                     <span class="order-item__count">{{ item.quantity }} шт.</span>
                                 </div>
-                                <div class="order-item__price">{{ item.total_price }} ₽</div>
+                                <div class="order-item__price">{{ item.get_subtotal|floatformat:2 }} ₽</div>
                             </div>
                         {% endfor %}
                     </div>
@@ -42,7 +42,7 @@
                     <div class="order-card__bottom">
                         <div class="order-summary">
                             <span>Сумма заказа</span>
-                            <strong>{{ order.total_amount }} ₽</strong>
+                            <strong>{{ order.total_price|floatformat:2 }} ₽</strong>
                         </div>
 
                         <a href="#" class="btn btn--outline">Подробнее</a>

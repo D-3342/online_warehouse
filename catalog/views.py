@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
-from .models import Product, Category
+from .models import Product, Category, Offer
 
 
 def home(request):
@@ -70,7 +70,17 @@ def dish_list(request):
 
 
 def product_detail(request, pk):
-    product = get_object_or_404(Product.objects.select_related('category'), pk=pk)
+    product = get_object_or_404(Product.objects.select_related('category', 'offer'), pk=pk)
     return render(request, 'pages/products/detail.html', {
         'product': product,
     })
+
+
+def offers_page(request):
+    offers = Offer.objects.filter(is_active=True).select_related('product', 'product__category')
+    return render(request, 'pages/offers/offers.html', {
+        'offers': offers
+    })
+
+def contacts_page(request):
+    return render(request, 'pages/contacts/contacts.html')

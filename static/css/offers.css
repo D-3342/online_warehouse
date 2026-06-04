@@ -1,0 +1,146 @@
+.offers-page {
+    padding-top: 10px;
+}
+
+.offers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.offer-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.offer-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
+}
+
+.offer-card__badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #dc2626;
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.offer-card__img {
+    width: 100%;
+    height: 200px;
+    background: #f4f6f8;
+}
+
+.offer-card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.offer-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+}
+
+.offer-card__content h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.offer-card__content p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.offer-card__price {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+}
+
+.offer-card__price .old-price {
+    color: var(--muted);
+    text-decoration: line-through;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.offer-card__price .new-price {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.offer-card__meta {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+@media (max-width: 992px) {
+    .offers-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .offers-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.offer-card__price {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+}
+
+.offer-card__price .old-price {
+    color: var(--muted);
+    text-decoration: line-through;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.offer-card__price .new-price {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 20px;
+}
+.offer-card__price .new-price {
+    color: var(--primary);
+}
+.offer-card .cart-item-total {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.offer-card .cart-item-total .old-price {
+    color: var(--muted) !important;
+    text-decoration: line-through;
+    font-weight: 600;
+}
+
+.offer-card .cart-item-total .new-price {
+    color: var(--primary) !important;
+    font-weight: 800;
+    font-size: 20px;
+}
