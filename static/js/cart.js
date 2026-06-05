@@ -85,4 +85,21 @@ function updateCartTotal() {
     if (totalRow) totalRow.textContent = total.toFixed(2) + ' ₽';
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const btn = document.getElementById('guest-checkout-btn');
+    const modal = document.getElementById('auth-modal');
+
+    if (btn && modal) {
+        btn.addEventListener('click', function () {
+            modal.classList.add('is-open');
+        });
+
+        modal.addEventListener('click', function (e) {
+            if (e.target.matches('[data-close-auth-modal]')) {
+                modal.classList.remove('is-open');
+            }
+        });
+    }
+});
+
 document.addEventListener('DOMContentLoaded', updateCartTotal);

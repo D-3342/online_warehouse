@@ -16,11 +16,13 @@
                     <div class="offer-card__badge">-{{ offer.discount_percent }}%</div>
 
                     <div class="offer-card__img">
-                        {% if offer.product.image %}
-                            <img src="{{ offer.product.image.url }}" alt="{{ offer.product.name }}">
-                        {% else %}
-                            <img src="/media/products/default.jpg" alt="{{ offer.product.name }}">
-                        {% endif %}
+                        <a href="{% url 'warehouse:product_detail' offer.product.id %}" class="offer-card__img-link">
+                            {% if offer.product.image %}
+                                <img src="{{ offer.product.image.url }}" alt="{{ offer.product.name }}">
+                            {% else %}
+                                <img src="/media/products/default.jpg" alt="{{ offer.product.name }}">
+                            {% endif %}
+                        </a>
                     </div>
 
                     <div class="offer-card__content">

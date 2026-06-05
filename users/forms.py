@@ -1,4 +1,3 @@
-# users/forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
@@ -7,16 +6,24 @@ from .models import CustomUser
 
 
 class RegisterForm(UserCreationForm):
-    full_name = forms.CharField(label='ФИО', max_length=150)
-    phone = forms.CharField(label='Телефон', max_length=16)
-    email = forms.EmailField(label='Email')
-
     class Meta:
         model = CustomUser
         fields = ('username', 'full_name', 'phone', 'email', 'password1', 'password2')
         labels = {
             'username': 'Логин'
         }
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError('Пользователь с такой почтой уже существует.')
+        return email
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        if phone and CustomUser.objects.filter(phone=phone).exists():
+            raise forms.ValidationError('Пользователь с таким телефоном уже существует.')
+        return phone
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -37,32 +44,12 @@ class RegisterForm(UserCreationForm):
 
         return full_name
 
-    def clean_phone(self):
-        phone = self.cleaned_data.get('phone')
-
-        if not re.fullmatch(r'8\(\d{3}\)\d{3}-\d{2}-\d{2}', phone):
-            raise ValidationError('Телефон должен быть в формате 8(XXX)XXX-XX-XX')
-
-        if CustomUser.objects.filter(phone=phone).exists():
-            raise ValidationError('Пользователь с таким телефоном уже существует')
-
-        return phone
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-
-        if CustomUser.objects.filter(email=email).exists():
-            raise ValidationError('Пользователь с таким email уже существует')
-
-        return email
-
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Логин', max_length=150)
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
 
 
-# Добавьте эту форму для редактирования профиля
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
@@ -83,7 +70,6 @@ class UserProfileForm(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
 
-        # Проверяем, что username не занят другим пользователем
         if CustomUser.objects.exclude(pk=self.instance.pk).filter(username=username).exists():
             raise ValidationError('Пользователь с таким логином уже существует')
 
@@ -106,7 +92,6 @@ class UserProfileForm(forms.ModelForm):
         if not re.fullmatch(r'8\(\d{3}\)\d{3}-\d{2}-\d{2}', phone):
             raise ValidationError('Телефон должен быть в формате 8(XXX)XXX-XX-XX')
 
-        # Проверяем, что телефон не занят другим пользователем
         if CustomUser.objects.exclude(pk=self.instance.pk).filter(phone=phone).exists():
             raise ValidationError('Пользователь с таким телефоном уже существует')
 
@@ -115,7 +100,6 @@ class UserProfileForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
 
-        # Проверяем, что email не занят другим пользователем
         if CustomUser.objects.exclude(pk=self.instance.pk).filter(email=email).exists():
             raise ValidationError('Пользователь с таким email уже существует')
 
